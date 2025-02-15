@@ -1,5 +1,6 @@
 pipeline {
     agent any
+
     stages {
         stage('Install Dependencies') { 
             steps {
@@ -9,13 +10,14 @@ pipeline {
         }
         stage('Run API Tests') { 
             steps {
-                bat 'npx newman run collections/BookingAPICollection.json -e collections/environments/BookingAPIEnv.json -r htmlextra -d collections/testdata/testData.json'
+                bat 'npx newman run collections/BookingAPICollection.json -e collections/environments/BookingAPIEnv.json -r htmlextra -d collections/testdata/testData.json --reporter-htmlextra-export newman-report.html'
             }
         }
     }
+
     post {
         always {
-            archiveArtifacts artifacts: 'newman-report/report.html', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'newman-report.html', allowEmptyArchive: true
         }
     }
 }
