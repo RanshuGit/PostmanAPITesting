@@ -1,0 +1,21 @@
+pipeline {
+  agent any
+  stages {
+    stage('Build') { 
+      steps {
+        bat 'npm install -g newman'
+        bat 'npm i newman-reporter-htmlextra'
+      }
+    }
+    stage('Test') { 
+      steps {
+        bat 'newman run BookingAPICollection.json -e BookingAPIEnv.json -r htmlextra -d testData.json'
+      }
+    }
+  }
+  post {
+    always {
+      archiveArtifacts artifacts: '**/report.html', allowEmptyArchive: true
+    }
+  }
+}

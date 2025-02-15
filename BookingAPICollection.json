@@ -1,0 +1,594 @@
+{
+	"info": {
+		"_postman_id": "666139ec-6320-4f4b-897a-f3eafc47263e",
+		"name": "BookingAPICollection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30339225"
+	},
+	"item": [
+		{
+			"name": "PositiveScenarios",
+			"item": [
+				{
+					"name": "GetBookingIds",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify status code for Getting Booking Ids\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.expect(pm.response.to.be.ok);\r",
+									"});\r",
+									"pm.test(\"Varify Booking Ids is in number\", function() {\r",
+									"    pm.expect(pm.response.text).to.include(Number);\r",
+									"})"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/booking",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"booking"
+							],
+							"query": [
+								{
+									"key": "firstname",
+									"value": "sally",
+									"disabled": true
+								},
+								{
+									"key": "lastname",
+									"value": "brown",
+									"disabled": true
+								},
+								{
+									"key": "checkout",
+									"value": "2025-02-16",
+									"disabled": true
+								},
+								{
+									"key": "checkin",
+									"value": "2025-02-15",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateBooking",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = pm.response.json();\r",
+									"pm.environment.set(\"b_id\", jsonData.bookingid);\r",
+									"\r",
+									"pm.test(\"Verify Status Code for Create Booking\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.response.to.be.ok;\r",
+									"});\r",
+									"pm.test(\"Verify header content-type\", function() {\r",
+									"    pm.response.to.have.header(\"content-type\", \"application/json; charset=utf-8\");\r",
+									"});\r",
+									"pm.test(\"Response body should have valid fields\", function() {\r",
+									"    let responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.bookingid).to.be.a('number');\r",
+									"    pm.expect(responseJson.booking.firstname).to.be.a('string');\r",
+									"    pm.expect(responseJson.booking.lastname).to.be.a('string');\r",
+									"    pm.expect(responseJson.booking.totalprice).to.be.a('number');\r",
+									"    pm.expect(responseJson.booking.depositpaid).to.be.a('boolean');\r",
+									"    pm.expect(responseJson.booking.bookingdates).to.be.an('object');\r",
+									"    pm.expect(responseJson.booking.additionalneeds).to.be.a('string');\r",
+									"});\r",
+									"pm.test(\"Verify Response time validation\", function() {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstname\" : \"{{firstname}}\",\r\n    \"lastname\" : \"{{lastname}}\",\r\n    \"totalprice\" : 100,\r\n    \"depositpaid\" : false,\r\n    \"bookingdates\" : {\r\n        \"checkin\" : \"2025-02-015\",\r\n        \"checkout\" : \"2025-02-16\"\r\n    },\r\n    \"additionalneeds\" : \"{{additionalneeds}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/booking",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"booking"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetBookingDetails",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify Status Code for Getting Booking Details\", function() {",
+									"    if(pm.response.code === 404) {",
+									"        pm.response.to.be.notFound;",
+									"    } else if(pm.response.code === 200) {",
+									"        pm.response.to.be.ok;",
+									"    }",
+									"});",
+									"",
+									"const expectedSchema = ",
+									"{",
+									"  \"type\": \"object\",",
+									"  \"properties\": {",
+									"    \"firstname\": {",
+									"      \"type\": \"string\"",
+									"    },",
+									"    \"lastname\": {",
+									"      \"type\": \"string\"",
+									"    },",
+									"    \"totalprice\": {",
+									"      \"type\": \"integer\"",
+									"    },",
+									"    \"depositpaid\": {",
+									"      \"type\": \"boolean\"",
+									"    },",
+									"    \"bookingdates\": {",
+									"      \"type\": \"object\",",
+									"      \"properties\": {",
+									"        \"checkin\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"checkout\": {",
+									"          \"type\": \"string\"",
+									"        }",
+									"      },",
+									"      \"required\": [",
+									"        \"checkin\",",
+									"        \"checkout\"",
+									"      ]",
+									"    },",
+									"    \"additionalneeds\": {",
+									"      \"type\": \"string\"",
+									"    }",
+									"  },",
+									"  \"required\": [",
+									"    \"firstname\",",
+									"    \"lastname\",",
+									"    \"totalprice\",",
+									"    \"depositpaid\",",
+									"    \"bookingdates\",",
+									"    \"additionalneeds\"",
+									"  ]",
+									"}",
+									"pm.test(\"Verify JSON Schema\", function() {",
+									"    pm.response.to.have.jsonSchema(expectedSchema);",
+									"});",
+									"",
+									"let fname = pm.variables.get('firstname');",
+									"let lname = pm.variables.get('lastname');",
+									"pm.test(\"Response body should have valid fields\", function() {",
+									"    let responseJson = pm.response.json();",
+									"     if(pm.response.code === 200){",
+									"    pm.expect(responseJson.firstname).to.eql(fname);",
+									"    pm.expect(responseJson.lastname).to.eql(lname);",
+									"    pm.expect(responseJson.totalprice).to.eql(100);",
+									"    pm.expect(responseJson.depositpaid).to.eql(false);",
+									"    pm.expect(responseJson.bookingdates.checkin).to.eql('2025-02-15');",
+									"    pm.expect(responseJson.bookingdates.checkout).to.eql('2025-02-16');",
+									"    pm.expect(responseJson.additionalneeds).to.eql('Breakfast');",
+									"    }",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/booking/{{b_id}}",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"booking",
+								"{{b_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GenrateToken",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let jsonData = pm.response.json();\r",
+									"pm.environment.set(\"b_token\", jsonData.token);\r",
+									"pm.test(\"Verify Status Code for Create Booking\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.response.to.be.ok;\r",
+									"});\r",
+									"pm.test(\"Verify header content-type\", function() {\r",
+									"    pm.response.to.have.header(\"content-type\", \"application/json; charset=utf-8\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"admin\",\r\n    \"password\":\"password123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/auth",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateBookingDetails",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify Status Code for Create Booking\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.response.to.be.ok;\r",
+									"});\r",
+									"pm.test(\"Verify header content-type\", function() {\r",
+									"    pm.response.to.have.header(\"content-type\", \"application/json; charset=utf-8\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token={{b_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstname\": \"Mathew\",\r\n    \"lastname\": \"Verk\",\r\n    \"totalprice\": 100,\r\n    \"depositpaid\": true,\r\n    \"bookingdates\": {\r\n        \"checkin\": \"2025-02-15\",\r\n        \"checkout\": \"2025-02-16\"\r\n    },\r\n    \"additionalneeds\": \"Breakfast\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/booking/{{b_id}}",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"booking",
+								"{{b_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PartialUpdateDeatils",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify Status Code for Create Booking\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.response.to.be.ok;\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "token={{b_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"totalprice\": 999\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/booking/{{b_id}}",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"booking",
+								"{{b_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteBooking",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify Status code for created and sucess delete\", () => {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Cookie",
+								"value": "token={{b_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/booking/{{b_id}}",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"booking",
+								"{{b_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Curl Command Create Booking",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify Status Code for Create Booking\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"    pm.response.to.be.ok;\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstname\" : \"East\",\r\n    \"lastname\" : \"Verk\",\r\n    \"totalprice\" : 100,\r\n    \"depositpaid\" : false,\r\n    \"bookingdates\" : {\r\n        \"checkin\" : \"2025-02-015\",\r\n        \"checkout\" : \"2025-02-16\"\r\n    },\r\n    \"additionalneeds\" : \"Breakfast\"\r\n}"
+						},
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/booking",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"booking"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "NegativeScenarios",
+			"item": [
+				{
+					"name": "GettingBookingIdWithInvalidId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify Status Code for Create Booking\", function() {\r",
+									"    pm.response.to.have.status(404);\r",
+									"    pm.response.to.be.notFound;\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/booking/:id",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"booking",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "2100000000000000000"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CreateBookingWithEmptyDetails",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Verify Status Code for Create Booking\", function() {\r",
+									"    pm.response.to.have.status(400);\r",
+									"    pm.response.to.be.badRequest;\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstname\": \"Ammey\",\r\n    \"lastname\": \"Verk\",\r\n    \"totalprice\": ----,\r\n    \"depositpaid\": false,\r\n    \"bookingdates\": {\r\n        \"checkin\": \"2025-02-15\",\r\n        \"checkout\": \"2025-02-16\"\r\n    },\r\n    \"additionalneeds\": \"Breakfast\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://restful-booker.herokuapp.com/booking/",
+							"protocol": "https",
+							"host": [
+								"restful-booker",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"booking",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
