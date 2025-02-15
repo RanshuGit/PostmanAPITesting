@@ -9,7 +9,7 @@ pipeline {
         }
         stage('Run API Tests') { 
             steps {
-                bat 'npx newman run collections/BookingAPICollection.json -e environments/BookingAPIEnv.json -r htmlextra --reporter-htmlextra-export=newman-report/report.html -d testdata/testData.json'
+                bat 'npx newman run collections/BookingAPICollection.json -e collections/environments/BookingAPIEnv.json -r htmlextra -d collections/testdata/testData.json'
             }
         }
     }
