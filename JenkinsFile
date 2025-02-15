@@ -9,7 +9,7 @@ pipeline {
     }
     stage('Test') { 
       steps {
-        bat 'newman run BookingAPICollection.json -e BookingAPIEnv.json -r htmlextra -d testData.json'
+        bat 'newman run BookingAPICollection.json -e environments/BookingAPIEnv.json -r htmlextra -d testdata/testData.json'
       }
     }
   }
