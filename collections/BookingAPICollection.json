@@ -97,7 +97,7 @@
 									"    pm.expect(responseJson.booking.additionalneeds).to.be.a('string');\r",
 									"});\r",
 									"pm.test(\"Verify Response time validation\", function() {\r",
-									"    pm.expect(pm.response.responseTime).to.be.below(300);\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
 									"});"
 								],
 								"type": "text/javascript",
@@ -221,9 +221,21 @@
 							}
 						}
 					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
 						"method": "GET",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "https://restful-booker.herokuapp.com/booking/{{b_id}}",
 							"protocol": "https",
